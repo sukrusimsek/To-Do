@@ -41,17 +41,21 @@ class DetailScreen: UIViewController {
 
 extension DetailScreen: DetailScreenInterface {
     func configureVC() {
-        view.backgroundColor = .cyan
+        view.backgroundColor = .systemBackground
         
     }
     func configureSubject() {
         subject = UITextField(frame: .zero)
         subject.translatesAutoresizingMaskIntoConstraints = false
         subject.placeholder = "Konuyu Giriniz.."
-        subject.font = .systemFont(ofSize: 12, weight: .semibold)
+        subject.font = .systemFont(ofSize: 15, weight: .semibold)
         subject.textColor = .secondaryLabel
         subject.textAlignment = .left
-        subject.borderStyle = .bezel
+        subject.borderStyle = .roundedRect
+        subject.layer.cornerRadius = 10
+        subject.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        subject.layer.borderWidth = 1
+        subject.layer.masksToBounds = true
         view.addSubview(subject)
         
         NSLayoutConstraint.activate([
@@ -65,10 +69,14 @@ extension DetailScreen: DetailScreenInterface {
         tag = UITextField(frame: .zero)
         tag.translatesAutoresizingMaskIntoConstraints = false
         tag.placeholder = "#tag"
-        tag.font = .systemFont(ofSize: 12, weight: .semibold)
+        tag.font = .systemFont(ofSize: 15, weight: .semibold)
         tag.textColor = .secondaryLabel
         tag.textAlignment = .left
-        tag.borderStyle = .bezel
+        tag.borderStyle = .roundedRect
+        tag.layer.cornerRadius = 10
+        tag.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        tag.layer.borderWidth = 1
+        tag.layer.masksToBounds = true
         view.addSubview(tag)
         
         NSLayoutConstraint.activate([
@@ -82,10 +90,14 @@ extension DetailScreen: DetailScreenInterface {
         desc = UITextField(frame: .zero)
         desc.translatesAutoresizingMaskIntoConstraints = false
         desc.placeholder = "Açıklama Giriniz.."
-        desc.font = .systemFont(ofSize: 12, weight: .semibold)
+        desc.font = .systemFont(ofSize: 15, weight: .semibold)
         desc.textColor = .secondaryLabel
         desc.textAlignment = .left
-        desc.borderStyle = .bezel
+        desc.borderStyle = .roundedRect
+        desc.layer.cornerRadius = 10
+        desc.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        desc.layer.borderWidth = 1
+        desc.layer.masksToBounds = true
         view.addSubview(desc)
         
         NSLayoutConstraint.activate([
@@ -96,7 +108,6 @@ extension DetailScreen: DetailScreenInterface {
         ])
     }
     func buttonTapped() {
-        print("deneme")
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         let saveData = NSEntityDescription.insertNewObject(forEntityName: "Todo", into: context)
@@ -113,12 +124,17 @@ extension DetailScreen: DetailScreenInterface {
             print("error")
         }
         
+        NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "newData"), object: nil)
+        self.navigationController?.popViewController(animated: true)
+        
     }
     func configureButton() {
         button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Kaydet", for: .normal)
         button.backgroundColor = .systemTeal
+        button.layer.cornerRadius = 10
+        
         button.addAction(UIAction(handler: { [weak self] _ in
             self?.buttonTapped()
             

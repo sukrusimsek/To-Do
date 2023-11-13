@@ -23,11 +23,12 @@ extension HomeViewModel: HomeViewModelInterface {
     func viewDidLoad() {
         view?.configureVC()
         view?.configureTableView()
+        view?.getData()
         
     }
     func viewWillAppear() {
-        //NotificationCenter.default.addObserver(self, selector: #selector(view?.createCoreData), name: NSNotification.Name("newData"), object: nil)
-        
+        view?.viewWillCreate()
     }
+    
     
 }
