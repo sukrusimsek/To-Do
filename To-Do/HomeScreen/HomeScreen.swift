@@ -11,7 +11,6 @@ import CoreData
 protocol HomeScreenInterface: AnyObject {
     func configureVC()
     func configureTableView()
-    func createCoreData()
 }
 
 class HomeScreen: UIViewController {
@@ -21,13 +20,14 @@ class HomeScreen: UIViewController {
     var sourceId: UUID?
     
     private let viewModel = HomeViewModel()
-    private var tableView: UITableView!
+    private var tableView = UITableView()
     override func viewDidLoad() {
         super.viewDidLoad()
         
         viewModel.view = self
         viewModel.viewDidLoad()
         viewModel.viewWillAppear()
+        
 
     }
 }
@@ -35,6 +35,7 @@ class HomeScreen: UIViewController {
 extension HomeScreen: HomeScreenInterface {
     func configureVC() {
         title = "To-Do"
+        navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(addItem))
     }
     func configureTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -47,32 +48,9 @@ extension HomeScreen: HomeScreenInterface {
         //tableView. register
         
     }
-    func createCoreData() {
-        
+    @objc func addItem() {
+        navigationController?.pushViewController(DetailScreen(), animated: true)
     }
-    /*@objc func createCoreData() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let context = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Todo")
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            for  result in results as! [NSManagedObject] {
-                if let subject = result.value(forKey: "subject") as? String {
-                    self.subjectArray.append(subject)
-                }
-                if let if = result.value(forKey: "id") as? UUID {
-                    self.idArray.append(id)
-                }
-                self.tableView.reloadData()
-            }
-        } catch {
-            
-     }
-    }*/
-    
-    
 }
 
 extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
@@ -81,7 +59,11 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = UITableViewCell()
+        cell.textLabel?.text = "Hello"
+        //nameArray[indexPath.row]
+        return cell
+        
     }
     
     

@@ -21,8 +21,8 @@ class DetailViewModel {
 extension DetailViewModel: DetailViewModelInterface {
     func viewDidLoad() {
         view?.configureVC()
-        view?.configureTag()
         view?.configureSubject()
+        view?.configureTag()
         view?.configureDesc()
         view?.configureButton()
         

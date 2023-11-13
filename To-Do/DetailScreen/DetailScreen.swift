@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol DetailScreenInterface: AnyObject {
     func configureVC()
@@ -24,10 +25,15 @@ class DetailScreen: UIViewController {
     private var tag: UITextField!
     private var desc: UITextField!
     private var button: UIButton!
+    var targetName = ""
+    var targetId: UUID?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewModel.view = self
+        viewModel.viewDidLoad()
         
     }
   
@@ -35,10 +41,11 @@ class DetailScreen: UIViewController {
 
 extension DetailScreen: DetailScreenInterface {
     func configureVC() {
-        view.backgroundColor = .systemGray3
+        view.backgroundColor = .cyan
         
     }
     func configureSubject() {
+        subject = UITextField(frame: .zero)
         subject.translatesAutoresizingMaskIntoConstraints = false
         subject.placeholder = "Konuyu Giriniz.."
         subject.font = .systemFont(ofSize: 12, weight: .semibold)
@@ -55,12 +62,13 @@ extension DetailScreen: DetailScreenInterface {
         ])
     }
     func configureTag() {
+        tag = UITextField(frame: .zero)
         tag.translatesAutoresizingMaskIntoConstraints = false
-        tag.placeholder = "#tag örnek:eğlence,iş,eğitim"
+        tag.placeholder = "#tag"
         tag.font = .systemFont(ofSize: 12, weight: .semibold)
         tag.textColor = .secondaryLabel
         tag.textAlignment = .left
-        tag.borderStyle = .roundedRect
+        tag.borderStyle = .bezel
         view.addSubview(tag)
         
         NSLayoutConstraint.activate([
@@ -71,6 +79,7 @@ extension DetailScreen: DetailScreenInterface {
         ])
     }
     func configureDesc() {
+        desc = UITextField(frame: .zero)
         desc.translatesAutoresizingMaskIntoConstraints = false
         desc.placeholder = "Açıklama Giriniz.."
         desc.font = .systemFont(ofSize: 12, weight: .semibold)
@@ -86,10 +95,34 @@ extension DetailScreen: DetailScreenInterface {
             
         ])
     }
+    func buttonTapped() {
+        print("deneme")
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        let saveData = NSEntityDescription.insertNewObject(forEntityName: "Todo", into: context)
+        
+        saveData.setValue(subject.text!, forKey: "subject")
+        saveData.setValue(tag.text!, forKey: "tag")
+        saveData.setValue(desc.text!, forKey: "desc")
+        saveData.setValue(UUID(), forKey: "id")
+        
+        do {
+            try context.save()
+            print("success")
+        } catch  {
+            print("error")
+        }
+        
+    }
     func configureButton() {
+        button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Kaydet", for: .normal)
         button.backgroundColor = .systemTeal
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.buttonTapped()
+            
+        }), for: .touchUpInside)
         view.addSubview(button)
         
         NSLayoutConstraint.activate([
@@ -97,5 +130,8 @@ extension DetailScreen: DetailScreenInterface {
             button.leadingAnchor.constraint(equalTo: subject.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: subject.trailingAnchor)
         ])
+        
+        
     }
+    
 }
