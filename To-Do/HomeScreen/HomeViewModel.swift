@@ -10,6 +10,7 @@ import Foundation
 protocol HomeViewModelInterface {
     var view: HomeScreenInterface? { get set }
     func viewDidLoad()
+    func viewWillAppear()
 }
 
 class HomeViewModel {
@@ -20,8 +21,14 @@ class HomeViewModel {
 
 extension HomeViewModel: HomeViewModelInterface {
     func viewDidLoad() {
+        view?.configureVC()
+        view?.configureTableView()
+        view?.createCoreData()
         
     }
-    
+    func viewWillAppear() {
+        //NotificationCenter.default.addObserver(self, selector: #selector(view?.createCoreData), name: NSNotification.Name("newData"), object: nil)
+        
+    }
     
 }

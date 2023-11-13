@@ -15,6 +15,8 @@
 		8D98F1E72B02620B00D236CE /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1E62B02620B00D236CE /* HomeScreen.swift */; };
 		8D98F1E92B02627400D236CE /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1E82B02627400D236CE /* HomeViewModel.swift */; };
 		8D98F1EC2B02662900D236CE /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1EB2B02662900D236CE /* UIView+Ext.swift */; };
+		8D98F1F12B0273A000D236CE /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F02B0273A000D236CE /* DetailViewModel.swift */; };
+		8D98F1F32B0273AE00D236CE /* DetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F22B0273AE00D236CE /* DetailScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		8D98F1E62B02620B00D236CE /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		8D98F1E82B02627400D236CE /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		8D98F1EB2B02662900D236CE /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
+		8D98F1F02B0273A000D236CE /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		8D98F1F22B0273AE00D236CE /* DetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +89,8 @@
 		8D98F1E52B0261D000D236CE /* DetailScreen */ = {
 			isa = PBXGroup;
 			children = (
+				8D98F1F02B0273A000D236CE /* DetailViewModel.swift */,
+				8D98F1F22B0273AE00D236CE /* DetailScreen.swift */,
 			);
 			path = DetailScreen;
 			sourceTree = "<group>";
@@ -167,8 +173,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D98F1F32B0273AE00D236CE /* DetailScreen.swift in Sources */,
 				8D98F1E72B02620B00D236CE /* HomeScreen.swift in Sources */,
 				8D98F1CE2B02609300D236CE /* AppDelegate.swift in Sources */,
+				8D98F1F12B0273A000D236CE /* DetailViewModel.swift in Sources */,
 				8D98F1EC2B02662900D236CE /* UIView+Ext.swift in Sources */,
 				8D98F1D02B02609300D236CE /* SceneDelegate.swift in Sources */,
 				8D98F1E92B02627400D236CE /* HomeViewModel.swift in Sources */,
