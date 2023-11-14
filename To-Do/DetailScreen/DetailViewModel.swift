@@ -25,6 +25,7 @@ extension DetailViewModel: DetailViewModelInterface {
         view?.configureTag()
         view?.configureDesc()
         view?.configureButton()
+        view?.checkTarget()
         
     }
 }

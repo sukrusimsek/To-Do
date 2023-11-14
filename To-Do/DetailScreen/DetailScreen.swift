@@ -14,6 +14,7 @@ protocol DetailScreenInterface: AnyObject {
     func configureTag()
     func configureDesc()
     func configureButton()
+    func checkTarget()
 }
 
 
@@ -21,11 +22,11 @@ protocol DetailScreenInterface: AnyObject {
 class DetailScreen: UIViewController {
     private let viewModel = DetailViewModel()
     
-    private var subject: UITextField!
-    private var tag: UITextField!
-    private var desc: UITextField!
+    private var subjectText: UITextField!
+    private var tagText: UITextField!
+    private var descText: UITextField!
     private var button: UIButton!
-    var targetName = ""
+    var targetSubject = ""
     var targetId: UUID?
     
     
@@ -45,65 +46,65 @@ extension DetailScreen: DetailScreenInterface {
         
     }
     func configureSubject() {
-        subject = UITextField(frame: .zero)
-        subject.translatesAutoresizingMaskIntoConstraints = false
-        subject.placeholder = "Konuyu Giriniz.."
-        subject.font = .systemFont(ofSize: 15, weight: .semibold)
-        subject.textColor = .secondaryLabel
-        subject.textAlignment = .left
-        subject.borderStyle = .roundedRect
-        subject.layer.cornerRadius = 10
-        subject.layer.borderColor = UIColor.opaqueSeparator.cgColor
-        subject.layer.borderWidth = 1
-        subject.layer.masksToBounds = true
-        view.addSubview(subject)
+        subjectText = UITextField(frame: .zero)
+        subjectText.translatesAutoresizingMaskIntoConstraints = false
+        subjectText.placeholder = "Konuyu Giriniz.."
+        subjectText.font = .systemFont(ofSize: 15, weight: .semibold)
+        subjectText.textColor = .secondaryLabel
+        subjectText.textAlignment = .left
+        subjectText.borderStyle = .roundedRect
+        subjectText.layer.cornerRadius = 10
+        subjectText.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        subjectText.layer.borderWidth = 1
+        subjectText.layer.masksToBounds = true
+        view.addSubview(subjectText)
         
         NSLayoutConstraint.activate([
-            subject.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            subject.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            subject.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -10),
+            subjectText.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
+            subjectText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            subjectText.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -10),
             
         ])
     }
     func configureTag() {
-        tag = UITextField(frame: .zero)
-        tag.translatesAutoresizingMaskIntoConstraints = false
-        tag.placeholder = "#tag"
-        tag.font = .systemFont(ofSize: 15, weight: .semibold)
-        tag.textColor = .secondaryLabel
-        tag.textAlignment = .left
-        tag.borderStyle = .roundedRect
-        tag.layer.cornerRadius = 10
-        tag.layer.borderColor = UIColor.opaqueSeparator.cgColor
-        tag.layer.borderWidth = 1
-        tag.layer.masksToBounds = true
-        view.addSubview(tag)
+        tagText = UITextField(frame: .zero)
+        tagText.translatesAutoresizingMaskIntoConstraints = false
+        tagText.placeholder = "#tag"
+        tagText.font = .systemFont(ofSize: 15, weight: .semibold)
+        tagText.textColor = .secondaryLabel
+        tagText.textAlignment = .left
+        tagText.borderStyle = .roundedRect
+        tagText.layer.cornerRadius = 10
+        tagText.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        tagText.layer.borderWidth = 1
+        tagText.layer.masksToBounds = true
+        view.addSubview(tagText)
         
         NSLayoutConstraint.activate([
-            tag.topAnchor.constraint(equalTo: subject.bottomAnchor, constant: 20),
-            tag.leadingAnchor.constraint(equalTo: subject.leadingAnchor),
-            tag.trailingAnchor.constraint(equalTo: subject.trailingAnchor),
+            tagText.topAnchor.constraint(equalTo: subjectText.bottomAnchor, constant: 20),
+            tagText.leadingAnchor.constraint(equalTo: subjectText.leadingAnchor),
+            tagText.trailingAnchor.constraint(equalTo: subjectText.trailingAnchor),
             
         ])
     }
     func configureDesc() {
-        desc = UITextField(frame: .zero)
-        desc.translatesAutoresizingMaskIntoConstraints = false
-        desc.placeholder = "Açıklama Giriniz.."
-        desc.font = .systemFont(ofSize: 15, weight: .semibold)
-        desc.textColor = .secondaryLabel
-        desc.textAlignment = .left
-        desc.borderStyle = .roundedRect
-        desc.layer.cornerRadius = 10
-        desc.layer.borderColor = UIColor.opaqueSeparator.cgColor
-        desc.layer.borderWidth = 1
-        desc.layer.masksToBounds = true
-        view.addSubview(desc)
+        descText = UITextField(frame: .zero)
+        descText.translatesAutoresizingMaskIntoConstraints = false
+        descText.placeholder = "Açıklama Giriniz.."
+        descText.font = .systemFont(ofSize: 15, weight: .semibold)
+        descText.textColor = .secondaryLabel
+        descText.textAlignment = .left
+        descText.borderStyle = .roundedRect
+        descText.layer.cornerRadius = 10
+        descText.layer.borderColor = UIColor.opaqueSeparator.cgColor
+        descText.layer.borderWidth = 1
+        descText.layer.masksToBounds = true
+        view.addSubview(descText)
         
         NSLayoutConstraint.activate([
-            desc.topAnchor.constraint(equalTo: tag.bottomAnchor,constant: 20),
-            desc.leadingAnchor.constraint(equalTo: subject.leadingAnchor),
-            desc.trailingAnchor.constraint(equalTo: subject.trailingAnchor),
+            descText.topAnchor.constraint(equalTo: tagText.bottomAnchor,constant: 20),
+            descText.leadingAnchor.constraint(equalTo: subjectText.leadingAnchor),
+            descText.trailingAnchor.constraint(equalTo: subjectText.trailingAnchor),
             
         ])
     }
@@ -112,9 +113,9 @@ extension DetailScreen: DetailScreenInterface {
         let context = appDelegate.persistentContainer.viewContext
         let saveData = NSEntityDescription.insertNewObject(forEntityName: "Todo", into: context)
         
-        saveData.setValue(subject.text!, forKey: "subject")
-        saveData.setValue(tag.text!, forKey: "tag")
-        saveData.setValue(desc.text!, forKey: "desc")
+        saveData.setValue(subjectText.text!, forKey: "subject")
+        saveData.setValue(tagText.text!, forKey: "tag")
+        saveData.setValue(descText.text!, forKey: "desc")
         saveData.setValue(UUID(), forKey: "id")
         
         do {
@@ -134,6 +135,10 @@ extension DetailScreen: DetailScreenInterface {
         button.setTitle("Kaydet", for: .normal)
         button.backgroundColor = .systemTeal
         button.layer.cornerRadius = 10
+        if subjectText == nil {
+            button.isEnabled = true
+            
+        }
         
         button.addAction(UIAction(handler: { [weak self] _ in
             self?.buttonTapped()
@@ -142,12 +147,44 @@ extension DetailScreen: DetailScreenInterface {
         view.addSubview(button)
         
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: desc.bottomAnchor, constant: 20),
-            button.leadingAnchor.constraint(equalTo: subject.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: subject.trailingAnchor)
+            button.topAnchor.constraint(equalTo: descText.bottomAnchor, constant: 20),
+            button.leadingAnchor.constraint(equalTo: subjectText.leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: subjectText.trailingAnchor)
         ])
         
         
+    }
+    func checkTarget() {
+        if targetSubject != "" {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Todo")
+            let idString = targetId?.uuidString
+            fetchRequest.predicate = NSPredicate(format: "id = %@", idString!)
+            fetchRequest.returnsObjectsAsFaults = false
+            
+            do {
+                let results = try context.fetch(fetchRequest)
+                for result in results as! [NSManagedObject] {
+                    if let subject = result.value(forKey: "subject") as? String {
+                        subjectText.text = subject
+                    }
+                    if let tag = result.value(forKey: "tag") as? String {
+                        tagText.text = tag
+                    }
+                    if let desc = result.value(forKey: "desc") as? String {
+                        descText.text = desc
+                    }
+                    
+                        
+                }
+                
+            } catch  {
+                print("Error")
+            }
+        } else {
+            
+        }
     }
     
 }

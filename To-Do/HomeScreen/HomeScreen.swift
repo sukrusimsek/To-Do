@@ -41,7 +41,7 @@ class HomeScreen: UIViewController {
 
 extension HomeScreen: HomeScreenInterface {
     func configureVC() {
-        title = "To-Do"
+        title = "To-Do 📚"
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(addItem))
     }
     func configureTableView() {
@@ -56,6 +56,7 @@ extension HomeScreen: HomeScreenInterface {
         
     }
     @objc func addItem() {
+        sourceSubject = ""
         navigationController?.pushViewController(DetailScreen(), animated: true)
     }
     @objc func getData() {
@@ -105,6 +106,43 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = subjectArray[indexPath.row]
         return cell
         
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let destinationVC = DetailScreen()
+        sourceSubject = subjectArray[indexPath.row]
+        sourceId = idArray[indexPath.row]
+        navigationController?.pushViewController(destinationVC, animated: true)
+        destinationVC.targetSubject = sourceSubject
+        destinationVC.targetId = sourceId
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Todo")
+        let idString = idArray[indexPath.row].uuidString
+        fetchRequest.predicate = NSPredicate(format: "id = %@", idString)
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            for result in results as! [NSManagedObject] {
+                if let _ = result.value(forKey: "id") as? UUID {
+                    context.delete(result)
+                    subjectArray.remove(at: indexPath.row)
+                    idArray.remove(at: indexPath.row)
+                    self.tableView.reloadData()
+                    
+                    do {
+                        try context.save()
+                    } catch  {
+                        print("Error")
+                    }
+                }
+            }
+        } catch  {
+            
+        }
     }
     
     
