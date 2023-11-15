@@ -111,20 +111,22 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.resueId,for: indexPath) as! ToDoCell
         cell.tagLabel.text = tagArray[indexPath.row]
         cell.textLabel?.text = subjectArray[indexPath.row]
-        if cell.tagLabel.text == "Eğlence" {
-            cell.tagLabel.backgroundColor = .systemGreen
-        }
-        if cell.tagLabel.text == "İş" {
-            cell.tagLabel.backgroundColor = .systemPink
-        }
-        if cell.tagLabel.text == "Rutin" {
-            cell.tagLabel.backgroundColor = .systemYellow
-        }
-        if cell.tagLabel.text == "Eğitim" {
-            cell.tagLabel.backgroundColor = .systemIndigo
-        }
         
-        
+        if let tagText = cell.tagLabel.text {
+            switch tagText {
+            case "Eğlence":
+                cell.tagLabel.backgroundColor = .systemGreen
+            case "İş":
+                cell.tagLabel.backgroundColor = .systemPink
+            case "Rutin":
+                cell.tagLabel.backgroundColor = .systemYellow
+            case "Eğitim":
+                cell.tagLabel.backgroundColor = .systemIndigo
+            default:
+                cell.tagLabel.backgroundColor = .systemFill
+                break
+            }
+        }
         return cell
         
     }
