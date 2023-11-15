@@ -15,11 +15,13 @@ protocol HomeScreenInterface: AnyObject {
     func viewWillCreate()
 }
 
-class HomeScreen: UIViewController {
+final class HomeScreen: UIViewController {
     var subjectArray = [String]()
     var idArray = [UUID]()
+    var tagArray = [String]()
     var sourceSubject = ""
     var sourceId: UUID?
+    var sourceTag = ""
     
     private let viewModel = HomeViewModel()
     private var tableView = UITableView()
@@ -49,10 +51,10 @@ extension HomeScreen: HomeScreenInterface {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.resueId)
         tableView.backgroundColor = .systemGray4
         tableView.pinToEdgesOf(view: view)
         
-        //tableView. register
         
     }
     @objc func addItem() {
@@ -62,6 +64,7 @@ extension HomeScreen: HomeScreenInterface {
     @objc func getData() {
         self.subjectArray.removeAll(keepingCapacity: true)
         self.idArray.removeAll(keepingCapacity: true)
+        self.tagArray.removeAll(keepingCapacity: true)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -78,6 +81,9 @@ extension HomeScreen: HomeScreenInterface {
                 if let id = result.value(forKey: "id") as? UUID {
                     self.idArray.append(id)
                     
+                }
+                if let tag = result.value(forKey: "tag") as? String {
+                    self.tagArray.append(tag)
                 }
                 self.tableView.reloadData()
                     
@@ -102,8 +108,23 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.resueId,for: indexPath) as! ToDoCell
+        cell.tagLabel.text = tagArray[indexPath.row]
         cell.textLabel?.text = subjectArray[indexPath.row]
+        if cell.tagLabel.text == "Eğlence" {
+            cell.tagLabel.backgroundColor = .systemGreen
+        }
+        if cell.tagLabel.text == "İş" {
+            cell.tagLabel.backgroundColor = .systemPink
+        }
+        if cell.tagLabel.text == "Rutin" {
+            cell.tagLabel.backgroundColor = .systemYellow
+        }
+        if cell.tagLabel.text == "Eğitim" {
+            cell.tagLabel.backgroundColor = .systemIndigo
+        }
+        
+        
         return cell
         
     }
@@ -131,6 +152,7 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
                     context.delete(result)
                     subjectArray.remove(at: indexPath.row)
                     idArray.remove(at: indexPath.row)
+                    tagArray.remove(at: indexPath.row)
                     self.tableView.reloadData()
                     
                     do {

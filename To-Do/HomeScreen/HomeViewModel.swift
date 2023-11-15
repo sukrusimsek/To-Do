@@ -13,7 +13,7 @@ protocol HomeViewModelInterface {
     func viewWillAppear()
 }
 
-class HomeViewModel {
+final class HomeViewModel {
     weak var view: HomeScreenInterface?
     
 }

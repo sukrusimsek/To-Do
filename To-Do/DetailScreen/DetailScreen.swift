@@ -19,7 +19,7 @@ protocol DetailScreenInterface: AnyObject {
 
 
 
-class DetailScreen: UIViewController {
+final class DetailScreen: UIViewController {
     private let viewModel = DetailViewModel()
     
     private var subjectText: UITextField!
@@ -135,10 +135,7 @@ extension DetailScreen: DetailScreenInterface {
         button.setTitle("Kaydet", for: .normal)
         button.backgroundColor = .systemTeal
         button.layer.cornerRadius = 10
-        if subjectText == nil {
-            button.isEnabled = true
-            
-        }
+        
         
         button.addAction(UIAction(handler: { [weak self] _ in
             self?.buttonTapped()

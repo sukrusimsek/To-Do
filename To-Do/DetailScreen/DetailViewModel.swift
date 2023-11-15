@@ -13,7 +13,7 @@ protocol DetailViewModelInterface {
     
 }
 
-class DetailViewModel {
+final class DetailViewModel {
     weak var view: DetailScreenInterface?
     
 }
