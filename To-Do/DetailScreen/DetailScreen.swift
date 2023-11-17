@@ -118,6 +118,8 @@ extension DetailScreen: DetailScreenInterface {
         saveData.setValue(descText.text!, forKey: "desc")
         saveData.setValue(UUID(), forKey: "id")
         
+        
+        
         do {
             try context.save()
             print("success")
@@ -135,6 +137,7 @@ extension DetailScreen: DetailScreenInterface {
         button.setTitle("Kaydet", for: .normal)
         button.backgroundColor = .systemTeal
         button.layer.cornerRadius = 10
+        
         
         
         button.addAction(UIAction(handler: { [weak self] _ in

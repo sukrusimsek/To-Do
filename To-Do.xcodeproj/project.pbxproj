@@ -18,6 +18,7 @@
 		8D98F1F12B0273A000D236CE /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F02B0273A000D236CE /* DetailViewModel.swift */; };
 		8D98F1F32B0273AE00D236CE /* DetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F22B0273AE00D236CE /* DetailScreen.swift */; };
 		8D98F1F62B03B76D00D236CE /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F52B03B76D00D236CE /* ToDoCell.swift */; };
+		8D98F1F82B054B5A00D236CE /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D98F1F72B054B5A00D236CE /* UIImage+Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		8D98F1F02B0273A000D236CE /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		8D98F1F22B0273AE00D236CE /* DetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailScreen.swift; sourceTree = "<group>"; };
 		8D98F1F52B03B76D00D236CE /* ToDoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoCell.swift; sourceTree = "<group>"; };
+		8D98F1F72B054B5A00D236CE /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIImage+Ext.swift"; path = "../../../../../Documents/UIImage+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				8D98F1EB2B02662900D236CE /* UIView+Ext.swift */,
+				8D98F1F72B054B5A00D236CE /* UIImage+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				8D98F1CE2B02609300D236CE /* AppDelegate.swift in Sources */,
 				8D98F1F12B0273A000D236CE /* DetailViewModel.swift in Sources */,
 				8D98F1EC2B02662900D236CE /* UIView+Ext.swift in Sources */,
+				8D98F1F82B054B5A00D236CE /* UIImage+Ext.swift in Sources */,
 				8D98F1D02B02609300D236CE /* SceneDelegate.swift in Sources */,
 				8D98F1E92B02627400D236CE /* HomeViewModel.swift in Sources */,
 				8D98F1F62B03B76D00D236CE /* ToDoCell.swift in Sources */,

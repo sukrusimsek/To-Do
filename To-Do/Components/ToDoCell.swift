@@ -27,7 +27,6 @@ final class ToDoCell: UITableViewCell {
         tagLabel = UILabel(frame: CGRect(x: contentView.frame.width - 10, y: 7, width: contentView.frame.width / 4, height: contentView.frame.height / 1.5))
         tagLabel.textColor = UIColor.black
         tagLabel.textAlignment = .center
-        //tagLabel.backgroundColor = UIColor.green
         tagLabel.layer.cornerRadius = 10
         tagLabel.layer.masksToBounds = true
         addSubview(tagLabel)

@@ -24,6 +24,7 @@ extension HomeViewModel: HomeViewModelInterface {
         view?.configureVC()
         view?.configureTableView()
         view?.getData()
+        view?.configureSearchCont()
         
     }
     func viewWillAppear() {
