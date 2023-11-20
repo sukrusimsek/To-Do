@@ -48,23 +48,13 @@ final class HomeScreen: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         viewModel.viewWillAppear()
-        
+        tableView.reloadData()
         
     }
 }
 extension HomeScreen: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        
-        
-        if let selectedCategory = searchBar.scopeButtonTitles?[selectedScope] {
-            self.selectedCategory = selectedCategory
-            filterData(by: selectedCategory)
-        }
-        filterContentForSearchText(searchText: searchBar.text ?? "", scope: selectedCategory)
-        updateSearchResults(for: searchController)
-        
-        
-        
+        filterContentForSearchText(searchText: searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -80,12 +70,10 @@ extension HomeScreen: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-        filterContentForSearchText(searchText: searchBar.text!, scope: scope)
- 
-        
+        filterContentForSearchText(searchText: searchController.searchBar.text!, scope: scope)
+
     }
 }
-
 extension HomeScreen: HomeScreenInterface {
     func configureVC() {
         title = "To-Do 📚"
@@ -96,21 +84,20 @@ extension HomeScreen: HomeScreenInterface {
         let combinedData = zip(subjectArray, tagArray).map { (subject, tag) in
             return (subject, tag)
         }
-        //print("CombinedData: \(combinedData)")
+        
         
         filteredToDo = combinedData.filter { (data: (subject: String, tag: String)) -> Bool in
             let doesCategoryMatch = (scope == "Hepsi") || (data.tag == scope)
             
             if isSearchBarEmpty() {
                 return doesCategoryMatch
-            } else {
-                return doesCategoryMatch && data.tag.lowercased().contains(searchText.lowercased())
             }
+            return doesCategoryMatch && data.tag.lowercased().contains(searchText.lowercased())
         }
-        //print("Filtered ToDo: \(filteredToDo)")
+        
 
         tableView.reloadData()
-        //print("After Filtering - Combined Data: \(combinedData)")
+        
 
     }
     func showAllData() {
@@ -156,6 +143,7 @@ extension HomeScreen: HomeScreenInterface {
         searchController.searchBar.scopeButtonTitles = ["Hepsi", "Eğitim", "Eğlence", "İş", "Rutin"]
         searchController.searchBar.delegate = self
         searchController.searchBar.becomeFirstResponder()
+        searchController.definesPresentationContext = true
         
     }
     
@@ -221,7 +209,7 @@ extension HomeScreen: HomeScreenInterface {
 extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() { return filteredToDo.count }
-        return subjectArray.count
+        return tagArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -232,12 +220,12 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
         let currentData: (subject: String, tag: String)
         
         if isFiltering() {
-            //print(filteredToDo)
+            
             currentData = filteredToDo[indexPath.row]
-            //print("\(currentData)currenctdata ")
+            
          } else {
-         currentData = (subject: subjectArray[indexPath.row], tag: tagArray[indexPath.row])
-             //print("\(currentData)currenctdata Else")
+             currentData = (subject: subjectArray[indexPath.row], tag: tagArray[indexPath.row])
+             
          }
         
         cell.tagLabel.text = currentData.tag
@@ -263,12 +251,26 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let destinationVC = DetailScreen()
-        sourceSubject = subjectArray[indexPath.row]
-        sourceId = idArray[indexPath.row]
-        
+            
+        var dataToPass: (subject: String, id: UUID)
+
+        if isFiltering() {
+            let selectedData = filteredToDo[indexPath.row]
+            if let selectedIndex = subjectArray.firstIndex(of: selectedData.0) {
+                dataToPass = (subject: selectedData.0, id: idArray[selectedIndex])
+                } else {
+                print("Handle the error")
+                return
+            }
+           } else {
+               dataToPass = (subject: subjectArray[indexPath.row], id: idArray[indexPath.row])
+           }
+            
         navigationController?.pushViewController(destinationVC, animated: true)
-        destinationVC.targetSubject = sourceSubject
-        destinationVC.targetId = sourceId
+            
+        destinationVC.targetSubject = dataToPass.subject
+        destinationVC.targetId = dataToPass.id
+        
         
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -285,9 +287,20 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
             for result in results as! [NSManagedObject] {
                 if let _ = result.value(forKey: "id") as? UUID {
                     context.delete(result)
-                    subjectArray.remove(at: indexPath.row)
-                    idArray.remove(at: indexPath.row)
-                    tagArray.remove(at: indexPath.row)
+                    
+                    if isFiltering() {
+                        let selectedData = filteredToDo[indexPath.row]
+                        if let selectedIndex = tagArray.firstIndex(of: selectedData.1) {
+                            subjectArray.remove(at: selectedIndex)
+                            idArray.remove(at: selectedIndex)
+                            tagArray.remove(at: selectedIndex)
+                            }
+                        filteredToDo.remove(at: indexPath.row)
+                    } else {
+                        subjectArray.remove(at: indexPath.row)
+                        idArray.remove(at: indexPath.row)
+                        tagArray.remove(at: indexPath.row)
+                    }
                     self.tableView.reloadData()
                     
                     do {
@@ -295,6 +308,7 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
                     } catch  {
                         print("Error")
                     }
+                    tableView.reloadData()
                 }
             }
         } catch  {
