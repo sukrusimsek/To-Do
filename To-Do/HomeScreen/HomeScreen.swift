@@ -17,6 +17,8 @@ protocol HomeScreenInterface: AnyObject {
     func filterContentForSearchText(searchText: String, scope: String)
     func isSearchBarEmpty() -> Bool
     func isFiltering() -> Bool
+    func filterData(by category: String)
+    func showAllData()
 }
 
 final class HomeScreen: UIViewController {
@@ -52,17 +54,19 @@ final class HomeScreen: UIViewController {
 }
 extension HomeScreen: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        filterContentForSearchText(searchText: searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+        
+        
+        if let selectedCategory = searchBar.scopeButtonTitles?[selectedScope] {
+            self.selectedCategory = selectedCategory
+            filterData(by: selectedCategory)
+        }
+        filterContentForSearchText(searchText: searchBar.text ?? "", scope: selectedCategory)
+        updateSearchResults(for: searchController)
         
         
         
-        
-//        if let selectedCategory = searchBar.scopeButtonTitles?[selectedScope] {
-//            print("What is the Selected Category: \(selectedCategory)")
-//            self.selectedCategory = selectedCategory
-//            filterContentForSearchText(searchText: searchBar.text ?? "", scope: selectedCategory)
-//        }
     }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.view?.filterContentForSearchText(searchText: searchText, scope: "Hepsi")
     }
@@ -76,7 +80,8 @@ extension HomeScreen: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-        filterContentForSearchText(searchText: searchController.searchBar.text!, scope: scope)
+        filterContentForSearchText(searchText: searchBar.text!, scope: scope)
+ 
         
     }
 }
@@ -85,41 +90,50 @@ extension HomeScreen: HomeScreenInterface {
     func configureVC() {
         title = "To-Do 📚"
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(addItem))
-        /*let actionAll = UIAction(title: "Hepsi", image: .all) { _ in
-            print("all")
-        }
-        let actionEducation = UIAction(title: "Eğitim", image: .education) { _ in
-            print("Eğitim")
-        }
-        let actionFun = UIAction(title: "Eğlence", image: .fun) { _ in
-            print("Eğlence")
-        }
-        let actionBusiness = UIAction(title: "İş", image: .business) { _ in
-            print("İş")
-        }
-        let actionRoutine = UIAction(title: "Rutin", image: .routine) { _ in
-            print("Rutin")
-        }
-        let menu = UIMenu(title: "Bilgiler v1.0", children: [actionAll,actionFun,actionRoutine,actionBusiness,actionEducation])
-        
-        let filterButton = UIBarButtonItem(title: nil, image: .more, primaryAction: nil, menu: menu)
-        navigationItem.leftBarButtonItem = filterButton*/
+
     }
     func filterContentForSearchText(searchText: String, scope: String = "Hepsi") {
         let combinedData = zip(subjectArray, tagArray).map { (subject, tag) in
             return (subject, tag)
         }
+        //print("CombinedData: \(combinedData)")
         
         filteredToDo = combinedData.filter { (data: (subject: String, tag: String)) -> Bool in
-            let doesCategoryMatch = (selectedCategory == "Hepsi") || (data.tag == selectedCategory)
-
+            let doesCategoryMatch = (scope == "Hepsi") || (data.tag == scope)
+            
             if isSearchBarEmpty() {
                 return doesCategoryMatch
             } else {
-                return doesCategoryMatch && data.subject.lowercased().contains(searchText.lowercased())
+                return doesCategoryMatch && data.tag.lowercased().contains(searchText.lowercased())
             }
         }
+        //print("Filtered ToDo: \(filteredToDo)")
+
         tableView.reloadData()
+        //print("After Filtering - Combined Data: \(combinedData)")
+
+    }
+    func showAllData() {
+        subjectArray = initialSubjectArray
+        tagArray = initialTagArray
+        idArray = initialIdArray
+        
+        tableView.reloadData()
+    }
+    func filterData(by category: String) {
+         if category == "Hepsi" {
+             showAllData()
+         } else {
+             
+         let filteredData = zip(subjectArray, tagArray).compactMap { (subject, tag) in
+         return tag == category ? subject : nil
+         }
+         subjectArray = filteredData
+         tagArray = Array(repeating: category, count: filteredData.count)
+
+            
+        tableView.reloadData()
+        }
     }
     func isSearchBarEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
@@ -143,8 +157,6 @@ extension HomeScreen: HomeScreenInterface {
         searchController.searchBar.delegate = self
         searchController.searchBar.becomeFirstResponder()
         
-       
-        
     }
     
     func configureTableView() {
@@ -163,6 +175,10 @@ extension HomeScreen: HomeScreenInterface {
         navigationController?.pushViewController(DetailScreen(), animated: true)
     }
     @objc func getData() {
+        subjectArray = initialSubjectArray
+        tagArray = initialTagArray
+        idArray = initialIdArray
+        
         self.subjectArray.removeAll(keepingCapacity: true)
         self.idArray.removeAll(keepingCapacity: true)
         self.tagArray.removeAll(keepingCapacity: true)
@@ -216,10 +232,14 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
         let currentData: (subject: String, tag: String)
         
         if isFiltering() {
+            //print(filteredToDo)
             currentData = filteredToDo[indexPath.row]
-        } else {
-            currentData = (subject: subjectArray[indexPath.row], tag: tagArray[indexPath.row])
-        }
+            //print("\(currentData)currenctdata ")
+         } else {
+         currentData = (subject: subjectArray[indexPath.row], tag: tagArray[indexPath.row])
+             //print("\(currentData)currenctdata Else")
+         }
+        
         cell.tagLabel.text = currentData.tag
         cell.textLabel?.text = currentData.subject
         
@@ -281,5 +301,5 @@ extension HomeScreen: UITableViewDelegate, UITableViewDataSource {
             
         }
     }
-
+    
 }
